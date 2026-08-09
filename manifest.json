@@ -1,7 +1,8 @@
 {
   "name": "Zyperr Repository",
+  "version": "1.0.0",
+  "description": "Custom Nuvio Scraper Plugins",
   "author": "ZYPERR",
-  "manifestVersion": 1,
   "providers": [
     {
       "id": "com.zyperr.miraculous",
@@ -9,11 +10,11 @@
       "version": "1.0.0",
       "author": "ZYPERR",
       "description": "Miraculous stream scraper",
-      "script": "https://raw.githubusercontent.com/zyperrISHERE/nuviostuff/main/providers/miraculous.js",
-      "manifestVersion": 1,
+      "filename": "providers/miraculous.js",
+      "url": "https://raw.githubusercontent.com/zyperrISHERE/nuviostuff/main/providers/miraculous.js",
+      "types": ["tv", "series"],
       "status": 1,
-      "lang": "en",
-      "type": "tv"
+      "enabled": true
     }
   ]
 }
