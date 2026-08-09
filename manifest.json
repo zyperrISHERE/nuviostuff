@@ -5,7 +5,7 @@
     {
       "id": "miraculous_it",
       "name": "Miraculous IT",
-      "description": "Scraper for miraculousladybugseason6.it.com",
+      "description": "Miraculous Ladybug scraper for miraculousladybugseason6.it.com",
       "version": "1.0.0",
       "author": "ZYPERR",
       "supportedTypes": ["movie", "tv"],
