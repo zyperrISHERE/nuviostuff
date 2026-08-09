@@ -1,39 +1,61 @@
 /**
- * Nuvio Provider for Miraculous.to
- * Pure Promise implementation for direct Hermes engine compatibility.
+ * Debugging Scraper for Miraculous.to
  */
 
 function getStreams(tmdbId, mediaType, season, episode) {
-  if (mediaType !== 'tv' && mediaType !== 'series') {
-    return Promise.resolve([]);
-  }
-
-  const s = parseInt(season, 10);
-  const e = parseInt(episode, 10);
-  
-  // Endpoint formatting for season & episode directory
+  const s = parseInt(season, 10) || 1;
+  const e = parseInt(episode, 10) || 1;
   const targetUrl = `https://miraculous.to/en/season-${s}/`;
+
+  console.log(`[Miraculous Plugin] Fetching target: ${targetUrl}`);
 
   return fetch(targetUrl, {
     headers: {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-      'Accept': 'text/html'
+      'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36',
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      'Referer': 'https://miraculous.to/'
     }
   })
     .then(response => {
-      if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
+      console.log(`[Miraculous Plugin] HTTP Status: ${response.status}`);
       return response.text();
     })
     .then(html => {
+      console.log(`[Miraculous Plugin] HTML Length Received: ${html.length}`);
+
+      // Check for Cloudflare challenge response
+      if (html.includes('Just a moment...') || html.includes('cf-challenge') || html.includes('enable JavaScript')) {
+        console.error('[Miraculous Plugin] Blocked by Cloudflare protection.');
+        return [];
+      }
+
       const streams = [];
-
-      // Extract direct HLS / video stream URLs
-      const streamRegex = /<source[^>]+src=["']([^"']+\.(?:m3u8|mp4))["']/gi;
       const iframeRegex = /<iframe[^>]+src=["']([^"']+)["']/gi;
-
       let match;
 
-      while ((match = streamRegex.exec(html)) !== null) {
+      while ((match = iframeRegex.exec(html)) !== null) {
+        let embedUrl = match[1];
+        if (embedUrl.startsWith('//')) embedUrl = 'https:' + embedUrl;
+
+        streams.push({
+          name: "Miraculous.to",
+          title: `Season ${s} Episode ${e} (Embed)`,
+          url: embedUrl,
+          quality: "720p",
+          format: "mp4"
+        });
+      }
+
+      console.log(`[Miraculous Plugin] Streams Found: ${streams.length}`);
+      return streams;
+    })
+    .catch(error => {
+      console.error('[Miraculous Plugin Error]:', error.message);
+      return [];
+    });
+}
+
+module.exports = { getStreams };
         streams.push({
           name: "Miraculous.to",
           title: `S${s}E${e} - Direct Stream (HLS/MP4)`,
