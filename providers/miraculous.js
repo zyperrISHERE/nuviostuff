@@ -15,25 +15,54 @@ function getStreams(tmdbId, mediaType, season, episode) {
       'Referer': 'https://miraculousladybugseason6.it.com/'
     }
   })
-    .then(response => {
-      if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
+    .then(function(response) {
+      if (!response.ok) throw new Error('HTTP Error ' + response.status);
       return response.text();
     })
-    .then(html => {
+    .then(function(html) {
       const streams = [];
 
-      // Pattern match direct media files
       const streamRegex = /<source[^>]+src=["']([^"']+\.(?:m3u8|mp4))["']/gi;
-      // Pattern match embedded player iframes
       const iframeRegex = /<iframe[^>]+src=["']([^"']+)["']/gi;
 
       let match;
       while ((match = streamRegex.exec(html)) !== null) {
         streams.push({
           name: "Miraculous IT",
-          title: `S${s}E${e} - Direct HLS/MP4`,
+          title: "S" + s + "E" + e + " - Direct Stream",
           url: match[1],
           quality: "1080p",
+          format: "m3u8",
+          headers: {
+            "Referer": "https://miraculousladybugseason6.it.com/"
+          }
+        });
+      }
+
+      if (streams.length === 0) {
+        while ((match = iframeRegex.exec(html)) !== null) {
+          let embedUrl = match[1];
+          if (embedUrl.startsWith('//')) embedUrl = 'https:' + embedUrl;
+
+          streams.push({
+            name: "Miraculous IT",
+            title: "S" + s + "E" + e + " - Embed Player",
+            url: embedUrl,
+            quality: "720p",
+            format: "mp4"
+          });
+        }
+      }
+
+      return streams;
+    })
+    .catch(function(error) {
+      console.error('[Miraculous IT Error]:', error.message);
+      return [];
+    });
+}
+
+module.exports = { getStreams };
           format: "m3u8",
           headers: {
             "Referer": "https://miraculousladybugseason6.it.com/"
