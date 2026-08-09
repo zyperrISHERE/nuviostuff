@@ -1,8 +1,16 @@
 {
-  "id": "com.zyperr.miraculous",
-  "name": "Miraculous.to Provider",
+  "id": "com.zyperr.miraculous.repo",
+  "name": "Miraculous Repo",
   "version": "1.0.0",
-  "filename": "providers/miraculous.js",
-  "supportedTypes": ["tv", "series"],
-  "enabled": true
+  "description": "Miraculous.to scraper provider for Nuvio",
+  "providers": [
+    {
+      "id": "com.zyperr.miraculous",
+      "name": "Miraculous.to",
+      "version": "1.0.0",
+      "filename": "providers/miraculous.js",
+      "supportedTypes": ["tv", "series"],
+      "enabled": true
+    }
+  ]
 }
