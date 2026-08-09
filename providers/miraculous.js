@@ -1,39 +1,70 @@
 /**
- * Debugging Scraper for Miraculous.to
+ * Miraculous Ladybug IT Scraper Plugin for Nuvio
+ * Pure Promise chain execution for React Native Hermes compatibility.
  */
 
 function getStreams(tmdbId, mediaType, season, episode) {
   const s = parseInt(season, 10) || 1;
   const e = parseInt(episode, 10) || 1;
-  const targetUrl = `https://miraculous.to/en/season-${s}/`;
-
-  console.log(`[Miraculous Plugin] Fetching target: ${targetUrl}`);
+  const targetUrl = 'https://miraculousladybugseason6.it.com/';
 
   return fetch(targetUrl, {
     headers: {
-      'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-      'Referer': 'https://miraculous.to/'
+      'Referer': 'https://miraculousladybugseason6.it.com/'
     }
   })
     .then(response => {
-      console.log(`[Miraculous Plugin] HTTP Status: ${response.status}`);
+      if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
       return response.text();
     })
     .then(html => {
-      console.log(`[Miraculous Plugin] HTML Length Received: ${html.length}`);
+      const streams = [];
 
-      // Check for Cloudflare challenge response
-      if (html.includes('Just a moment...') || html.includes('cf-challenge') || html.includes('enable JavaScript')) {
-        console.error('[Miraculous Plugin] Blocked by Cloudflare protection.');
-        return [];
+      // Pattern match direct media files
+      const streamRegex = /<source[^>]+src=["']([^"']+\.(?:m3u8|mp4))["']/gi;
+      // Pattern match embedded player iframes
+      const iframeRegex = /<iframe[^>]+src=["']([^"']+)["']/gi;
+
+      let match;
+      while ((match = streamRegex.exec(html)) !== null) {
+        streams.push({
+          name: "Miraculous IT",
+          title: `S${s}E${e} - Direct HLS/MP4`,
+          url: match[1],
+          quality: "1080p",
+          format: "m3u8",
+          headers: {
+            "Referer": "https://miraculousladybugseason6.it.com/"
+          }
+        });
       }
 
-      const streams = [];
-      const iframeRegex = /<iframe[^>]+src=["']([^"']+)["']/gi;
-      let match;
+      if (streams.length === 0) {
+        while ((match = iframeRegex.exec(html)) !== null) {
+          let embedUrl = match[1];
+          if (embedUrl.startsWith('//')) embedUrl = 'https:' + embedUrl;
 
-      while ((match = iframeRegex.exec(html)) !== null) {
+          streams.push({
+            name: "Miraculous IT",
+            title: `S${s}E${e} - Embed Stream`,
+            url: embedUrl,
+            quality: "720p",
+            format: "mp4"
+          });
+        }
+      }
+
+      return streams;
+    })
+    .catch(error => {
+      console.error('[Miraculous IT] Stream fetch failed:', error.message);
+      return [];
+    });
+}
+
+module.exports = { getStreams };
         let embedUrl = match[1];
         if (embedUrl.startsWith('//')) embedUrl = 'https:' + embedUrl;
 
