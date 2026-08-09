@@ -1,0 +1,8 @@
+{
+  "id": "com.zyperr.miraculous",
+  "name": "Miraculous.to Provider",
+  "version": "1.0.0",
+  "filename": "providers/miraculous.js",
+  "supportedTypes": ["tv", "series"],
+  "enabled": true
+}
