@@ -1,15 +1,30 @@
 {
-  "id": "com.zyperr.miraculous.repo",
-  "name": "Miraculous Repo",
+  "name": "Zyperr Repository",
+  "id": "com.zyperr.repo",
   "version": "1.0.0",
-  "description": "Miraculous.to scraper provider for Nuvio",
   "providers": [
     {
       "id": "com.zyperr.miraculous",
       "name": "Miraculous.to",
       "version": "1.0.0",
-      "filename": "providers/miraculous.js",
-      "supportedTypes": ["tv", "series"],
+      "url": "https://raw.githubusercontent.com/<YOUR_USERNAME>/<YOUR_REPO>/main/providers/miraculous.js",
+      "script": "https://raw.githubusercontent.com/<YOUR_USERNAME>/<YOUR_REPO>/main/providers/miraculous.js",
+      "file": "providers/miraculous.js",
+      "type": "tv",
+      "types": ["tv", "series"],
+      "enabled": true
+    }
+  ],
+  "plugins": [
+    {
+      "id": "com.zyperr.miraculous",
+      "name": "Miraculous.to",
+      "version": "1.0.0",
+      "url": "https://raw.githubusercontent.com/<YOUR_USERNAME>/<YOUR_REPO>/main/providers/miraculous.js",
+      "script": "https://raw.githubusercontent.com/<YOUR_USERNAME>/<YOUR_REPO>/main/providers/miraculous.js",
+      "file": "providers/miraculous.js",
+      "type": "tv",
+      "types": ["tv", "series"],
       "enabled": true
     }
   ]
